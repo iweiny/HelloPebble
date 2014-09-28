@@ -4,12 +4,12 @@
         ""
     ],
     "companyName": "iweiny@gmail.com",
-    "longName": "HelloPebble",
+    "longName": "Weight Watch",
     "projectType": "native",
     "resources": {
         "media": []
     },
-    "shortName": "HelloPebble",
+    "shortName": "WeightWatch",
     "uuid": "68a7e34b-b042-45eb-b888-c91af76a928f",
     "versionCode": 1,
     "versionLabel": "1.0",
