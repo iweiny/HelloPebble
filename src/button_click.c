@@ -6,28 +6,32 @@ static TextLayer *text_layer;
 /**
  * Weight handler code.
  */
-uint16_t w1 = 150;
-int8_t w2 = 0;
+struct ww_data
+{
+	uint8_t data_version;
+	int8_t w2 = 0;
+	uint16_t w1 = 150;
+} ww_data;
 char wstring[] = "xxxx.y";
 
 static void display_weight(void) {
-	snprintf(wstring, sizeof(wstring), "%4d.%1d", w1, w2);
+	snprintf(wstring, sizeof(wstring), "%4d.%1d", ww_data.w1, ww_data.w2);
 	text_layer_set_text(text_layer, wstring);
 }
 
 static void increment_weight(void) {
-	w2++;
-	if (w2 >= 10) {
-		w1++;
-		w2 = 0;
+	ww_data.w2++;
+	if (ww_data.w2 >= 10) {
+		ww_data.w1++;
+		ww_data.w2 = 0;
 	}
 }
 
 static void decriment_weight(void) {
-	w2--;
-	if (w2 < 0) {
-		w1--;
-		w2 = 9;
+	ww_data.w2--;
+	if (ww_data.w2 < 0) {
+		ww_data.w1--;
+		ww_data.w2 = 9;
 	}
 }
 	
