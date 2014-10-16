@@ -3,16 +3,42 @@
 static Window *window;
 static TextLayer *text_layer;
 
+#define DATA_VERSION 1
+#define DATA_OBJ_KEY 0xBEEF
+
 /**
  * Weight handler code.
  */
 struct ww_data
 {
 	uint8_t data_version;
-	int8_t w2 = 0;
-	uint16_t w1 = 150;
+	int8_t w2;
+	uint16_t w1;
 } ww_data;
 char wstring[] = "xxxx.y";
+
+/*
+ * Initialize our global data and read persistent storage
+ */
+static void default_ww_data(void)
+{
+	ww_data.data_version = DATA_VERSION;
+	ww_data.w1 = 150;
+	ww_data.w2 = 0;
+}
+static void init_ww_data(void) {
+	struct ww_data dstore;
+	default_ww_data();
+	if (persist_exists(DATA_OBJ_KEY)) {
+		int size = persist_read_data(DATA_OBJ_KEY, &dstore, sizeof(dstore));
+		if (size == sizeof(dstore) && dstore.data_version == DATA_VERSION) {
+			memcpy(&ww_data, &dstore, sizeof(ww_data));
+		}
+	}
+}
+static void save_ww_data(void) {
+	persist_write_data(DATA_OBJ_KEY, &ww_data, sizeof(ww_data));
+}
 
 static void display_weight(void) {
 	snprintf(wstring, sizeof(wstring), "%4d.%1d", ww_data.w1, ww_data.w2);
@@ -78,6 +104,7 @@ static void window_unload(Window *window) {
 }
 
 static void init(void) {
+  init_ww_data();
   window = window_create();
   window_set_click_config_provider(window, click_config_provider);
   window_set_window_handlers(window, (WindowHandlers) {
@@ -90,6 +117,7 @@ static void init(void) {
 
 static void deinit(void) {
   window_destroy(window);
+  save_ww_data();
 }
 
 int main(void) {
